@@ -71,6 +71,33 @@ func (b *Block) Body() *Body {
 	return b.body.content.(*Body)
 }
 
+// Detach removes the given block from its parent node, if any.
+// If no parent node, this is a no-op.
+//
+// This is equivalent to *Body.RemoveBlock().
+//
+// Returns true if it detached, or false otherwise.
+func (b *Block) Detach() bool {
+	if b.parent == nil {
+		return false
+	}
+
+	body, ok := b.parent.content.(*Body)
+	if !ok {
+		return false
+	}
+
+	n := body.items.FindNodeWithContent(b)
+	if n == nil {
+		return false
+	}
+
+	n.Detach()
+	body.items.Remove(n)
+
+	return true
+}
+
 func (a *Block) LeadComments() Tokens {
 	return a.leadComments.content.BuildTokens(nil)
 }
