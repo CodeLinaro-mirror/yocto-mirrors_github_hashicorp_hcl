@@ -37,6 +37,7 @@ jobs:
           go-version-file: go.mod
       - name: Go test
         run: |
+          set -eo pipefail
           go test -v -race -coverprofile="raw-coverage.out" ./... -coverpkg=./...
           # filter out Ragel files
           grep -v '.*.rl:' raw-coverage.out > coverage.out
